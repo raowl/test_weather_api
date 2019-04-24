@@ -15,7 +15,6 @@ type configuration struct {
 var Info = configuration{}
 
 func init() {
-	print("ESTO SE ESTA EJECUTANDOOOOOOOOOOOOOO")
 	file_abs_path, _ := filepath.Abs("config/conf.json")
 	//file, err := os.Open("../config/conf.json")
 	file, err := os.Open(file_abs_path)
