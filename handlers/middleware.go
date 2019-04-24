@@ -3,11 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/dgrijalva/jwt-go/request"
 	"github.com/gorilla/context"
 	"github.com/test_weather_api/config"
 	"github.com/test_weather_api/utils"
+	"gopkg.in/dgrijalva/jwt-go.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -52,16 +51,7 @@ func LoggingHandler(next http.Handler) http.Handler {
 //func (c *appContext) authHandler(next http.Handler) http.Handler {
 func AuthHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		// authToken := r.Header.Get("Authorization")
-		// print(authToken)
-		/*
-		   We could alternatively make getUser a method of appContext to be cleaner. Or wrap *sql.DB
-		   in a custom struct and add getUser as a method of this custom struct so we could call it
-		   simply with c.db.getUser(token).
-		*/
-		//user, err := getUser(c.db, authToken)
-		//token, err := request.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
-		token, err := request.ParseFromRequest(r, request.AuthorizationHeaderExtractor, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
 			return PublicKey, nil
 		})
 
@@ -77,15 +67,6 @@ func AuthHandler(next http.Handler) http.Handler {
 		}
 
 		fmt.Printf("token valido\n")
-		//fmt.Printf("%+v\n", token)
-
-		/*	fmt.Printf("user id")
-			fmt.Printf("\n%s\n", token.Claims["userid"])
-		*/
-		/* if err != nil {
-			http.Error(w, http.StatusText(401), 401)
-			return
-		} */
 
 		context.Set(r, "userid", token.Claims["userid"].(string))
 		next.ServeHTTP(w, r)

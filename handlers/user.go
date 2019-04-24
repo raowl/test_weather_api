@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
 	"github.com/raowl/test_weather_api/config"
 	"github.com/raowl/test_weather_api/repos"
+	"gopkg.in/dgrijalva/jwt-go.v2"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"net/http"
