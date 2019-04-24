@@ -21,14 +21,17 @@ func main() {
 	commonMiddleware := alice.New(context.ClearHandler, handlers.LoggingHandler, handlers.RecoverHandler, handlers.AcceptHandler)
 	router := NewRouter()
 
-	// user register and signin
-	router.Post("/api/v1/user/auth", commonMiddleware.Append(handlers.ContentTypeHandler, handlers.BodyHandler(repos.UserResource{})).ThenFunc(appC.AuthUserHandler))
+	// user register
 	router.Post("/api/v1/user", commonMiddleware.Append(handlers.ContentTypeHandler, handlers.BodyHandler(repos.UserResource{})).ThenFunc(appC.CreateUserHandler))
+	// user authentication
+	router.Post("/api/v1/user/auth", commonMiddleware.Append(handlers.ContentTypeHandler, handlers.BodyHandler(repos.UserResource{})).ThenFunc(appC.AuthUserHandler))
 	router.Put("/api/v1/user", commonMiddleware.Append(handlers.ContentTypeHandler, handlers.AuthHandler, handlers.BodyHandler(repos.UserResource{})).ThenFunc(appC.UpdateUserHandler))
 	router.Get("/api/v1/user/:id", commonMiddleware.Append(handlers.AuthHandler).ThenFunc(appC.UserHandler))
 
+	// create weather
 	router.Post("/api/v1/weather", commonMiddleware.Append(handlers.AuthHandler, handlers.ContentTypeHandler, handlers.BodyHandler(repos.WeatherResource{})).ThenFunc(appC.CreateWeatherHandler))
-	router.Get("/api/v1/weather/:id", commonMiddleware.ThenFunc(appC.WeatherHandler))
+	// get wheather by city
+	router.Get("/api/v1/weather/:id", commonMiddleware.Append(handlers.AuthHandler).ThenFunc(appC.WeatherHandler))
 	router.Get("/api/v1/weather/:id/history", commonMiddleware.ThenFunc(appC.WeatherHandler))
 	//router.Get("/api/v1/user/username/:username", commonMiddleware.Append(handlers.AuthHandler).ThenFunc(appC.UserHandler))
 	http.ListenAndServe(":8080", router)

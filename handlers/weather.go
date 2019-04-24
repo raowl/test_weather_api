@@ -15,7 +15,7 @@ type AppContext struct {
 
 func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 	//params := context.Get(r, "params").(httprouter.Params)
-	repo := repos.WeatherRepo{c.Db.C("markers")}
+	repo := repos.WeatherRepo{c.Db.C("weathers")}
 	markers, err := repo.All()
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 
 func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	params := context.Get(r, "params").(httprouter.Params)
-	repo := repos.WeatherRepo{c.Db.C("markers")}
+	repo := repos.WeatherRepo{c.Db.C("weathers")}
 	marker, err := repo.Find(params.ByName("id"))
 	if err != nil {
 		panic(err)
@@ -40,7 +40,7 @@ func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 
 func (c *AppContext) CreateWeatherHandler(w http.ResponseWriter, r *http.Request) {
 	body := context.Get(r, "body").(*repos.WeatherResource)
-	repo := repos.WeatherRepo{c.Db.C("markers")}
+	repo := repos.WeatherRepo{c.Db.C("weathers")}
 	err := repo.Create(&body.Data)
 	if err != nil {
 		panic(err)

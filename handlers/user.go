@@ -15,10 +15,6 @@ import (
 	"time"
 )
 
-//type AppContext struct {
-//	db *mgo.Database
-//}
-
 //POST: /api/v1/auth/ handler
 func (c *AppContext) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -67,20 +63,12 @@ func (c *AppContext) UserHandler(w http.ResponseWriter, r *http.Request) {
 	var user repos.UserResource
 
 	//fmt.Printf("userId")
-	userId := context.Get(r, "userid").(string)
+	//userId := context.Get(r, "userid").(string)
 
 	if params.ByName("id") != "undefined" {
 		fmt.Println("entro por aca")
 		user, err = repo.Find(params.ByName("id"))
-	} /*  else {
-		userId := context.Get(r, "userid").(string)
-		user, err = repo.Find(userId)
-	} */
-
-	/* if params.ByName("username") != "undefined" {
-		fmt.Println("entro por aca")
-		user, err = repo.Find(params.ByName("username"))
-	} /*  else { */
+	}
 	if err != nil {
 		panic(err)
 	}
@@ -89,10 +77,6 @@ func (c *AppContext) UserHandler(w http.ResponseWriter, r *http.Request) {
 	user.Data.FollowInfo = following
 	fmt.Printf("Currently following00000000000000000000000000000000000000000000000000000000000000000000000000...\n")
 	fmt.Printf("%+v\n", following)
-	followed, err := repo.GetFollowers(bson.ObjectIdHex(userId))
-	user.Data.FollowedInfo = followed
-	fmt.Printf("USER===00000000000000000000000000000000000000000000000000000000000000000000000000...\n")
-	fmt.Printf("%+v\n", user)
 	w.Header().Set("Content-Type", "application/vnd.api+json")
 	json.NewEncoder(w).Encode(user)
 }

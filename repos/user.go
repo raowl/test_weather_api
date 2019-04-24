@@ -3,7 +3,7 @@ package repos
 import (
 	"errors"
 	"fmt"
-	"github.com/raowl/goapi/utils"
+	"github.com/raowl/test_weather_api/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -68,16 +68,6 @@ type UserRepo struct {
 func (r *UserRepo) All() (UserCollection, error) {
 	result := UserCollection{[]User{}}
 	err := r.Coll.Find(nil).All(&result.Data)
-	if err != nil {
-		return result, err
-	}
-
-	return result, nil
-}
-
-func (r *UserRepo) GetFollowers(id bson.ObjectId) ([]UserF, error) {
-	result := []UserF{}
-	err := r.Coll.Find(bson.M{"following": id}).All(&result)
 	if err != nil {
 		return result, err
 	}
@@ -201,28 +191,6 @@ func (r *UserRepo) Update(user *User) error {
 
 	return nil
 }
-
-func (r *UserRepo) Unfollow(userId bson.ObjectId, unfollowId bson.ObjectId) error {
-	fmt.Printf("Entered to Unfollow..........................")
-	fmt.Println(userId)
-	fmt.Println(unfollowId)
-	fmt.Printf("%+v\n", unfollowId)
-	err := r.Coll.UpdateId(userId, bson.M{"$pull": bson.M{"following": unfollowId}})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-/* func (r *UserRepo) Update(user *User) error {
-	err := r.Coll.UpdateId(user.Id, user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-} */
 
 func (r *UserRepo) Delete(id string) error {
 	err := r.Coll.RemoveId(bson.ObjectIdHex(id))

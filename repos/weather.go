@@ -6,9 +6,11 @@ import (
 )
 
 type Weather struct {
-	Id       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	Username string        `json:"name,omitempty"`
-	time     string        `json:"author,omitempty"`
+	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	City           string        `json:"city,omitempty"`
+	CurrentWeather string        `json:"current_weather,omitempty"`
+	ForeCast       string        `json:"forecast,omitempty"`
+	ViewedBy       string        `json:"viewedBy,omitempty"`
 }
 
 type WeatherCollection struct {
