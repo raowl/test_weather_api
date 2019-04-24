@@ -5,12 +5,18 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+type ViewedBy struct {
+	//Created   time.Time     `bson:"created" json:"created"`
+	//CheckUser bson.ObjectId `bson:"user" json:"user"`
+	CheckUser bson.ObjectId `bson:"user" json:"user"`
+}
+
 type Weather struct {
 	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	City           string        `json:"city,omitempty"`
 	CurrentWeather string        `json:"current_weather,omitempty"`
 	ForeCast       string        `json:"forecast,omitempty"`
-	ViewedBy       string        `json:"viewedBy,omitempty"`
+	ViewedBy       []ViewedBy    `json:"viewedby,omitempty"`
 }
 
 type WeatherCollection struct {

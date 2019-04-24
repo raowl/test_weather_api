@@ -30,7 +30,7 @@ curl -H \
 http://localhost:8080/api/v1/weather
 
 
-getmarkers
+get history from wheater
 ...
 curl -H \
 "Authorization: Bearer REPLACEWITHTOKEN" \

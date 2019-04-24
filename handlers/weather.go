@@ -6,6 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/raowl/test_weather_api/repos"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 )
 
@@ -13,6 +14,7 @@ type AppContext struct {
 	Db *mgo.Database
 }
 
+//get all
 func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 	//params := context.Get(r, "params").(httprouter.Params)
 	repo := repos.WeatherRepo{c.Db.C("weathers")}
@@ -26,10 +28,21 @@ func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(markers)
 }
 
+// get by id
+
 func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	params := context.Get(r, "params").(httprouter.Params)
 	repo := repos.WeatherRepo{c.Db.C("weathers")}
 	marker, err := repo.Find(params.ByName("id"))
+	if err != nil {
+		panic(err)
+	}
+
+	// add viewedBy
+	userId := bson.ObjectIdHex(context.Get(r, "userid").(string))
+	body := context.Get(r, "body").(*repos.WeatherResource)
+	body.Data.ViewedBy = []repo.ViewedBy{{userId}}
+	err := repo.Update(&body.Data)
 	if err != nil {
 		panic(err)
 	}
