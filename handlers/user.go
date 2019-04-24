@@ -97,67 +97,6 @@ func (c *AppContext) UserHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func (c *AppContext) UserWithSkillsHandler(w http.ResponseWriter, r *http.Request) {
-	params := context.Get(r, "params").(httprouter.Params)
-	lang := r.FormValue("lang")
-	print("language")
-	print(lang)
-	userRepo := repos.UserRepo{c.Db.C("users")}
-	categorySkillsRepo := repos.SkillCategoryRepo{c.Db.C("skill_category")}
-	skillRepo := repos.SkillRepo{c.Db.C("skill")}
-
-	user, err := userRepo.Find(params.ByName("id"))
-
-	fmt.Println("***********************************************************")
-	fmt.Printf("%+v\n", user.Data.Skills)
-	fmt.Println("***********************************************************")
-	skills, err := skillRepo.GetByIds(user.Data.Skills, lang)
-	following, err := userRepo.GetByIds(user.Data.Following)
-
-	fmt.Printf("Currently following...\n")
-	fmt.Printf("%+v\n", following)
-
-	fmt.Printf("Skills...\n")
-	fmt.Printf("%+v\n", skills)
-
-	if err != nil {
-		panic(err)
-	}
-
-	type SkillCompleteLocal struct {
-		Id           bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-		Name         string        `json:"skill_name,omitempty" bson:"skill_name,omitempty"`
-		Category     bson.ObjectId `json:"category,omitempty" bson:"category,omitempty"`
-		CategoryName string        `json:"category_name,omitempty" bson:"category_name,omitempty"`
-	}
-
-	//other way is an $in in every category also in this loop, but gettting by id prob be quicker, check...
-	CatSkillInfo := make([]SkillCompleteLocal, len(skills.Data))
-	for i := range skills.Data {
-		category, err := categorySkillsRepo.GetById(skills.Data[i].Category, lang)
-		print("category......")
-		fmt.Printf("%+v\n", skills)
-		if err != nil {
-			print(err)
-		}
-		CatSkillInfo[i] = SkillCompleteLocal{skills.Data[i].Id, skills.Data[i].Name[0], skills.Data[i].Category, category.Data.Name[0]}
-	}
-
-	type AllInfo struct {
-		repos.UserResource
-		CatSkillInfo []SkillCompleteLocal
-		Follow       repos.UserCollection
-	}
-
-	AllInfoI := AllInfo{user, CatSkillInfo, following}
-	//AllInfoI := ""
-
-	fmt.Printf("ALL INFO\n")
-	fmt.Printf("%+v\n", AllInfoI)
-	w.Header().Set("Content-Type", "application/vnd.api+json")
-	json.NewEncoder(w).Encode(AllInfoI)
-}
-
 //POST: /api/v1/user/login/ handler
 func (c *AppContext) AuthUserHandler(w http.ResponseWriter, r *http.Request) {
 	var (
