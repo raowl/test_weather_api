@@ -19,7 +19,7 @@ curl -H \
 REPLACEWITHTOKEN" \
 -H "Accept: application/vnd.api+json" -H 'Content-Type: application/vnd.api+json' \
 -X POST -d '{"data":{"city":"medellin", "current_weather": "18", "forecast":"20"}}' \
-http://localhost:8080/weather
+http://localhost:8080/api/v1/weather
 
 
 get weathers
