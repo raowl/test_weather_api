@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/raowl/test_weather_api/repos"
 	"gopkg.in/mgo.v2"
-	//	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 )
 
@@ -33,6 +33,7 @@ func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	params := context.Get(r, "params").(httprouter.Params)
 	repo := repos.WeatherRepo{c.Db.C("weathers")}
+	id_str := params.ByName("id")
 	weather, err := repo.Find(params.ByName("id"))
 	if err != nil {
 		panic(err)
@@ -40,10 +41,10 @@ func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 
 	// add viewedBy
 	// TODO: this out of time dont seem to work, commented for compiling need to check again about it in golang
-	//userId := bson.ObjectIdHex(context.Get(r, "userid").(string))
+	userId := bson.ObjectIdHex(context.Get(r, "userid").(string))
 	//body := context.Get(r, "body").(*repos.WeatherResource)
-	//weather.ViewedBys = []repo.ViewedBys{{userId}}
-	//err := repo.Update(weather)
+	//iewedBys = []repo.ViewedBys{{userId}}
+	err = repo.Update(id_str, userId.String())
 	if err != nil {
 		panic(err)
 	}

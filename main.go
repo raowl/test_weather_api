@@ -30,7 +30,7 @@ func main() {
 
 	// create weather
 	router.Post("/api/v1/weather", commonMiddleware.Append(handlers.AuthHandler, handlers.ContentTypeHandler, handlers.BodyHandler(repos.WeatherResource{})).ThenFunc(appC.CreateWeatherHandler))
-	router.Get("/api/v1/weather", commonMiddleware.Append(handlers.AuthHandler, handlers.ContentTypeHandler, handlers.BodyHandler(repos.WeatherResource{})).ThenFunc(appC.WeathersHandler))
+	router.Get("/api/v1/weather", commonMiddleware.Append(handlers.AuthHandler).ThenFunc(appC.WeathersHandler))
 	// get wheather by city
 	router.Get("/api/v1/weather/:id", commonMiddleware.Append(handlers.AuthHandler).ThenFunc(appC.WeatherHandler))
 	router.Get("/api/v1/weather/:id/history", commonMiddleware.ThenFunc(appC.WeatherHandler))

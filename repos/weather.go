@@ -44,7 +44,7 @@ func (r *WeatherRepo) All() (WeatherCollection, error) {
 
 func (r *WeatherRepo) Find(id string) (WeatherResource, error) {
 	result := WeatherResource{}
-	err := r.Coll.FindId(bson.ObjectIdHex(id)).One(&result.Data)
+	err := r.Coll.Find(bson.M{"city": id}).One(&result.Data)
 	if err != nil {
 		return result, err
 	}
@@ -73,8 +73,12 @@ func (r *WeatherRepo) Delete(id string) error {
 	return nil
 }
 
-func (r *WeatherRepo) Update(weather *Weather) error {
-	err := r.Coll.UpdateId(weather.Id, bson.M{"$addToSet": bson.M{"viewdbys": bson.M{"$each": weather.ViewedBys}}})
+func (r *WeatherRepo) Update(weather string, visitor string) error {
+	colQuerier := bson.M{"city": weather}
+	//change := bson.M{"$addToSet": bson.M{"viewdbys": bson.M{"$each": weather.ViewedBys}}}
+	change := bson.M{"$push": bson.M{"viewdbys": bson.M{"viewedbys": visitor}}}
+
+	err := r.Coll.Update(colQuerier, change)
 	if err != nil {
 		return err
 	}
