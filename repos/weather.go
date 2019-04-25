@@ -16,7 +16,7 @@ type Weather struct {
 	City           string        `json:"city,omitempty"`
 	CurrentWeather string        `json:"current_weather,omitempty"`
 	ForeCast       string        `json:"forecast,omitempty"`
-	ViewedBy       []ViewedBy    `json:"viewedby,omitempty"`
+	ViewedBys      []ViewedBy    `json:"viewedby,omitempty"`
 }
 
 type WeatherCollection struct {
@@ -66,6 +66,15 @@ func (r *WeatherRepo) Create(weather *Weather) error {
 
 func (r *WeatherRepo) Delete(id string) error {
 	err := r.Coll.RemoveId(bson.ObjectIdHex(id))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *WeatherRepo) Update(weather *Weather) error {
+	err := r.Coll.UpdateId(weather.Id, bson.M{"$addToSet": bson.M{"viewdbys": bson.M{"$each": weather.ViewedBys}}})
 	if err != nil {
 		return err
 	}

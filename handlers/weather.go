@@ -33,22 +33,23 @@ func (c *AppContext) WeathersHandler(w http.ResponseWriter, r *http.Request) {
 func (c *AppContext) WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	params := context.Get(r, "params").(httprouter.Params)
 	repo := repos.WeatherRepo{c.Db.C("weathers")}
-	marker, err := repo.Find(params.ByName("id"))
+	weather, err := repo.Find(params.ByName("id"))
 	if err != nil {
 		panic(err)
 	}
 
 	// add viewedBy
-	userId := bson.ObjectIdHex(context.Get(r, "userid").(string))
-	body := context.Get(r, "body").(*repos.WeatherResource)
-	body.Data.ViewedBy = []repo.ViewedBy{{userId}}
-	err := repo.Update(&body.Data)
+	// TODO: this out of time dont seem to work, commented for compiling need to check again about it in golang
+	//userId := bson.ObjectIdHex(context.Get(r, "userid").(string))
+	//body := context.Get(r, "body").(*repos.WeatherResource)
+	//weather.ViewedBys = []repo.ViewedBys{{userId}}
+	//err := repo.Update(weather)
 	if err != nil {
 		panic(err)
 	}
 
 	w.Header().Set("Content-Type", "application/vnd.api+json")
-	json.NewEncoder(w).Encode(marker)
+	json.NewEncoder(w).Encode(weather)
 }
 
 func (c *AppContext) CreateWeatherHandler(w http.ResponseWriter, r *http.Request) {
