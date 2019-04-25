@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/raowl/test_weather_api/repos"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	//	"gopkg.in/mgo.v2/bson"
 	"net/http"
 )
 
